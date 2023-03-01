@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Análise de Faturamento</title>
+  </head>
+  <body>
+    <h1>Análise de Faturamento</h1>
+    <p>Carregando dados...</p>
+
+    <script>
+      // Carrega o arquivo JSON externo
+      fetch('dados.json')
+        .then(response => response.json())
+        .then(data => {
+          // Encontra o menor valor de faturamento
+          let menorFaturamento = Number.MAX_VALUE;
+          data.forEach(item => {
+            if (item.valor < menorFaturamento) {
+              menorFaturamento = item.valor;
+            }
+          });
+          console.log('Menor faturamento: ' + menorFaturamento);
+
+          // Encontra o maior valor de faturamento
+          let maiorFaturamento = Number.MIN_VALUE;
+          data.forEach(item => {
+            if (item.valor > maiorFaturamento) {
+              maiorFaturamento = item.valor;
+            }
+          });
+          console.log('Maior faturamento: ' + maiorFaturamento);
+
+          // Calcula a média mensal de faturamento
+          const totalFaturamento = data.reduce((total, item) => total + item.valor, 0);
+          const mediaFaturamento = totalFaturamento / data.length;
+
+          // Encontra o número de dias com faturamento superior à média
+          let diasAcimaMedia = 0;
+          data.forEach(item => {
+            if (item.valor > mediaFaturamento) {
+              diasAcimaMedia++;
+            }
+          });
+          console.log('Dias acima da média: ' + diasAcimaMedia);
+
+          // Exibe os resultados na página
+          const resultado = document.createElement('div');
+          resultado.innerHTML = `
+            <p>Menor faturamento: R$ ${menorFaturamento.toFixed(2)}</p>
+            <p>Maior faturamento: R$ ${maiorFaturamento.toFixed(2)}</p>
+            <p>Dias acima da média: ${diasAcimaMedia}</p>
+          `;
+          document.body.appendChild(resultado);
+        })
+        .catch(error => console.error(error));
+    </script>
+  </body>
+</html>
