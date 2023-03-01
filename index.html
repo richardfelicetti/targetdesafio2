@@ -9,13 +9,16 @@
     <p>Carregando dados...</p>
 
     <script>
-      // Carrega o arquivo JSON externo
+      // Carrega o arquivo JSON
       fetch('dados.json')
         .then(response => response.json())
         .then(data => {
+          // Ignora os valores diferentes de 0
+          const dataFiltrado = data.filter(item => item.valor !== 0);
+
           // Encontra o menor valor de faturamento
           let menorFaturamento = Number.MAX_VALUE;
-          data.forEach(item => {
+          dataFiltrado.forEach(item => {
             if (item.valor < menorFaturamento) {
               menorFaturamento = item.valor;
             }
@@ -24,20 +27,21 @@
 
           // Encontra o maior valor de faturamento
           let maiorFaturamento = Number.MIN_VALUE;
-          data.forEach(item => {
+          dataFiltrado.forEach(item => {
             if (item.valor > maiorFaturamento) {
               maiorFaturamento = item.valor;
             }
           });
           console.log('Maior faturamento: ' + maiorFaturamento);
 
-          // Calcula a média mensal de faturamento
-          const totalFaturamento = data.reduce((total, item) => total + item.valor, 0);
-          const mediaFaturamento = totalFaturamento / data.length;
+          // Calcula a média mensal de faturamento, ignorando dias com valor 0
+          const dataFiltradoComValor = dataFiltrado.filter(item => item.valor > 0);
+          const totalFaturamento = dataFiltradoComValor.reduce((total, item) => total + item.valor, 0);
+          const mediaFaturamento = totalFaturamento / dataFiltradoComValor.length;
 
-          // Encontra o número de dias com faturamento superior à média
+          // Encontra o número de dias com faturamento superior à média, ignorando dias com valor 0
           let diasAcimaMedia = 0;
-          data.forEach(item => {
+          dataFiltradoComValor.forEach(item => {
             if (item.valor > mediaFaturamento) {
               diasAcimaMedia++;
             }
